@@ -2,8 +2,6 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 54321
 
-console.clear();
-
 // cheerio
 const cheerio = require('cheerio');
 const htmlparser2 = require("htmlparser2");
@@ -44,16 +42,18 @@ app.get('/api', async (req, res) => {
   //   return res.send(result_1)
   // }
 
-  // https://reelit.io/api/fetch
-  const result_2 = await _loadSite2(url);
-  if (result_2.status == 'success') {
-    return res.send(result_2)
-  }
+
 
   //  // https://snapinsta.app/action.php
   const result_3 = await _loadSite3(url);
   if (result_3.status == 'success') {
     return res.send(result_3)
+  }
+  
+  // https://reelit.io/api/fetch
+  const result_2 = await _loadSite2(url);
+  if (result_2.status == 'success') {
+    return res.send(result_2)
   }
 
 
@@ -266,11 +266,8 @@ async function _loadSite1(instaUrl) {
     object['data'] = null;
   });
 
-
   return object;
-
 }
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port http://localhost:${port}`)
