@@ -27,6 +27,9 @@ app.get('/api', async (req, res) => {
   const multiVideoUrl = 'https://www.instagram.com/p/Cnr10dmonzv/?utm_source=ig_web_copy_link';
   const videoFirstImage = 'https://www.instagram.com/p/Cnr6mjyoWg6/';
 
+  // timeout 8 seconds
+  const timeout = 8000;
+
   var url = req.query.url ?? instaUrl;
 
   // const userAgent = req.headers['x-insta-header'];
@@ -49,7 +52,7 @@ app.get('/api', async (req, res) => {
   if (result_3.status == 'success') {
     return res.send(result_3)
   }
-  
+
   // https://reelit.io/api/fetch
   const result_2 = await _loadSite2(url);
   if (result_2.status == 'success') {
