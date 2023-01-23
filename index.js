@@ -44,11 +44,11 @@ app.get('/api', async (req, res) => {
   //   return res.send(result_1)
   // }
 
-  // // https://reelit.io/api/fetch
-  // const result_2 = await _loadSite2(url);
-  // if (result_2.status == 'success') {
-  //   return res.send(result_2)
-  // }
+  // https://reelit.io/api/fetch
+  const result_2 = await _loadSite2(url);
+  if (result_2.status == 'success') {
+    return res.send(result_2)
+  }
 
   //  // https://snapinsta.app/action.php
   const result_3 = await _loadSite3(url);
