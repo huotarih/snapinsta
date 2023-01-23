@@ -30,6 +30,13 @@ app.get('/api', async (req, res) => {
   // timeout 8 seconds
   const timeout = 8000;
 
+  // sleep 10 seconds
+  const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+
+  await sleep(10000);
+
   var url = req.query.url ?? instaUrl;
 
   // const userAgent = req.headers['x-insta-header'];
