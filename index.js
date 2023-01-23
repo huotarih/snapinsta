@@ -39,16 +39,16 @@ app.get('/api', async (req, res) => {
   // }
 
   // https://instaoffline.net/process/
-  const result_1 = await _loadSite1(url);
-  if (result_1.status == 'success') {
-    return res.send(result_1)
-  }
+  // const result_1 = await _loadSite1(url);
+  // if (result_1.status == 'success') {
+  //   return res.send(result_1)
+  // }
 
-  // https://reelit.io/api/fetch
-  const result_2 = await _loadSite2(url);
-  if (result_2.status == 'success') {
-    return res.send(result_2)
-  }
+  // // https://reelit.io/api/fetch
+  // const result_2 = await _loadSite2(url);
+  // if (result_2.status == 'success') {
+  //   return res.send(result_2)
+  // }
 
   //  // https://snapinsta.app/action.php
   const result_3 = await _loadSite3(url);
