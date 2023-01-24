@@ -10,7 +10,12 @@ const htmlparser2 = require("htmlparser2");
 const axios = require('axios');
 
 app.get('/', async (req, res) => {
-  res.send('Hello World!')
+    var object = {};
+    object['status'] = 'success';
+    object['error'] = null;
+    object['data'] = 'Welcome to Insta API';
+
+  res.send(object);
 })
 
 
@@ -34,7 +39,7 @@ app.get('/api', async (req, res) => {
   // const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds))
   // await sleep(10000);
 
-  var url = req.query.url ?? instaUrl;
+  var url = req.query.url ?? instaVideoUrl;
 
   // const userAgent = req.headers['x-insta-header'];
   // if (userAgent == undefined || userAgent == null || userAgent == '') {
