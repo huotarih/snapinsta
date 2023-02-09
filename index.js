@@ -32,6 +32,8 @@ app.get('/api', async (req, res) => {
   const multiVideoUrl = 'https://www.instagram.com/p/Cnr10dmonzv/?utm_source=ig_web_copy_link';
   const videoFirstImage = 'https://www.instagram.com/p/Cnr6mjyoWg6/';
 
+  const zainab_zawoloo ='https://www.instagram.com/p/Cn_wU6BtuGw/';
+
   // timeout 8 seconds
   const timeout = 8000;
 
@@ -39,7 +41,7 @@ app.get('/api', async (req, res) => {
   // const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds))
   // await sleep(10000);
 
-  var url = req.query.url ?? instaVideoUrl;
+  var url = req.query.url ?? zainab_zawoloo;
 
   // const userAgent = req.headers['x-insta-header'];
   // if (userAgent == undefined || userAgent == null || userAgent == '') {
@@ -134,7 +136,14 @@ async function _loadSite3(instaUrl) {
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       const itemUrl = $(item).find('a').attr('href');
-      const is_video = $(item).find('div.download-items__thumb.video').length > 0 ? true : false;
+      // const is_video = $(item).find('div.download-items__thumb.video').length > 0 ? true : false;
+
+      const dbtn = $(item).find('div.download-items__btn').find('a').attr('onclick');
+      // if dbtn content has click_download_photo
+      // then it is a photo
+      // else it is a video
+      const is_video = dbtn.indexOf('click_download_photo') > 0 ? false : true;
+      
 
       object['data'].push({
         url: itemUrl.replaceAll('&dl=1', ""),
