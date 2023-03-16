@@ -33,7 +33,7 @@ app.get('/api', async (req, res) => {
   const multiVideoUrl = 'https://www.instagram.com/p/Cnr10dmonzv/?utm_source=ig_web_copy_link';
   const videoFirstImage = 'https://www.instagram.com/p/Cnr6mjyoWg6/';
 
-  const zainab_zawoloo ='https://www.instagram.com/p/Cpm9esPNFz-/';
+  const zainab_zawoloo ='https://www.instagram.com/p/Cn_wU6BtuGw/';
 
   // timeout 8 seconds
   const timeout = 8000;
@@ -101,9 +101,7 @@ async function _snapinsta(instaUrl) {
 
     // extract decodeURIComponent from response.data
     var dataStr = response.data.toString();
-    // console.log(dataStr);
-
-    // console.log('dd:'+useRegex(dataStr));
+    console.log(dataStr);
 
     var startTag = '))}(';
     var endTag = '))';
@@ -120,7 +118,7 @@ async function _snapinsta(instaUrl) {
     var arr = result.split(",");
     var javascriptHtml = eval(arr[0].replaceAll('"', ""), arr[1], arr[2].replaceAll('"', ""), arr[3], arr[4], arr[5]);
 
-    // console.log(javascriptHtml);
+    console.log(javascriptHtml);
 
     var s = 'document.getElementById("download").innerHTML = "';
     var e = '</div>";';
@@ -130,22 +128,26 @@ async function _snapinsta(instaUrl) {
     var end = javascriptHtml.indexOf(e, start);
     var result = javascriptHtml.substring(start, end);
 
-    console.log('result: ' + result);
+    // console.log(result);
 
     const dom = htmlparser2.parseDocument(result.replaceAll("\\", ""));
     const $ = cheerio.load(dom);
 
-    const items = $('div.row').find('div.download-item');
-    console.log('items find length: ' + items.length);
+    const items = $('div.download-box').find('div.download-items');
+    console.log(items.length);
 
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      const itemUrl = $(item).find('a').attr('href'); 
-      const a_label = $(item).find('a').text().trim();
-      // console.log('a_label: ' + a_label);
-    
-      const is_video = a_label == 'Download Photo' ? false : true;
+      const itemUrl = $(item).find('a').attr('href');
+      // const is_video = $(item).find('div.download-items__thumb.video').length > 0 ? true : false;
+
+      const dbtn = $(item).find('div.download-items__btn').find('a').attr('onclick');
+      // if dbtn content has click_download_photo
+      // then it is a photo
+      // else it is a video
+      const is_video = dbtn.indexOf('click_download_photo') > 0 ? false : true;
       
+
       object['data'].push({
         url: itemUrl.replaceAll('&dl=1', ""),
         is_video: is_video,
@@ -162,11 +164,6 @@ async function _snapinsta(instaUrl) {
   return object;
 }
 
-
-function useRegex(input) {
-  let regex = /var _0xc29e=\["","split","[^"]*","slice","indexOf","","","\.","pow","reduce","reverse","0"\];function _0xe82c\(d,e,f\)\{var g=_0xc29e\[2\]\[_0xc29e\[1\]\]\(_0xc29e\[0\]\);var h=g\[_0xc29e\[3\]\]\(0,e\);var i=g\[_0xc29e\[3\]\]\(0,f\);var j=d\[_0xc29e\[1\]\]\(_0xc29e\[0\]\)\[_0xc29e\[10\]\]\(\)\[_0xc29e\[9\]\]\(function\(a,b,c\)\{if\(h\[_0xc29e\[4\]\]\(b\)!==-1\)return a\+=h\[_0xc29e\[4\]\]\(b\)\*\(Math\[_0xc29e\[8\]\]\(e,c\)\)\},0\);var k=_0xc29e\[0\];while\(j>0\)\{k=i\[j%f\]\+k;j=\(j-\(j%f\)\)\/f\}return k\|\|_0xc29e\[11\]\}eval\(function\(h,u,n,t,e,r\)\{r=""for\(var i=0,len=h\.length;i<len;i\+\+\)\{var s=""while\(h\[i\]!==n\[e\]\)\{s\+=h\[i\];i\+\+\}for\(var j=0;j<n\.length;j\+\+\)s=s\.replace\(new RegExp\(n\[j\],"g"\),j\);r\+=String\.fromCharCode\(_0xe82c\(s,e,10\)-t\)\}return decodeURIComponent\(escape\(r\)\)\}\("[^"]*",[0-9]+,"[^"]*",[0-9]+,[0-9]+,[0-9]+\)\)/i;
-  return regex.test(input);
-}
 
 
 function _0xe62c(d, e, f) {
