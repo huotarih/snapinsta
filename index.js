@@ -76,7 +76,7 @@ app.get('/api', async (req, res) => {
 });
 
 async function _snapinsta(instaUrl) {
-  const siteUrl = 'https://snapinsta.app/action.php';
+  const siteUrl = 'https://snapinsta.app/action2.php';
 
   var object = {};
   object['status'] = 'success';
