@@ -130,7 +130,7 @@ async function _snapinsta(instaUrl) {
     var end = javascriptHtml.indexOf(e, start);
     var result = javascriptHtml.substring(start, end);
 
-    console.log('result: ' + result);
+    // console.log('result: ' + result);
 
     const dom = htmlparser2.parseDocument(result.replaceAll("\\", ""));
     const $ = cheerio.load(dom);
