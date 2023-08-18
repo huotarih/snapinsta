@@ -156,7 +156,7 @@ async function _snapinstaIO(instaUrl) {
 
 
 async function _snapinsta(instaUrl) {
-  const siteUrl = 'https://snapinsta.app/action.php';
+  const siteUrl = 'https://snapinsta.app/action2.php';
 
   var object = {};
   object['status'] = 'success';
@@ -210,7 +210,7 @@ async function _snapinsta(instaUrl) {
     var end = javascriptHtml.indexOf(e, start);
     var result = javascriptHtml.substring(start, end);
 
-    console.log('result: ' + result);
+    // console.log('result: ' + result);
 
     const dom = htmlparser2.parseDocument(result.replaceAll("\\", ""));
     const $ = cheerio.load(dom);
