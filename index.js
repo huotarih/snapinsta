@@ -11,10 +11,10 @@ const axios = require('axios');
 console.clear();
 
 app.get('/', async (req, res) => {
-  var object = {};
-  object['status'] = 'success';
-  object['error'] = null;
-  object['data'] = 'Welcome to Insta API';
+    var object = {};
+    object['status'] = 'success';
+    object['error'] = null;
+    object['data'] = 'Welcome to Insta API';
 
   res.send(object);
 })
@@ -33,7 +33,7 @@ app.get('/api', async (req, res) => {
   const multiVideoUrl = 'https://www.instagram.com/p/Cnr10dmonzv/?utm_source=ig_web_copy_link';
   const videoFirstImage = 'https://www.instagram.com/p/Cnr6mjyoWg6/';
 
-  const zainab_zawoloo = 'https://www.instagram.com/p/Cpm9esPNFz-/';
+  const zainab_zawoloo ='https://www.instagram.com/p/Cpm9esPNFz-/';
 
   // timeout 8 seconds
   const timeout = 8000;
@@ -42,7 +42,7 @@ app.get('/api', async (req, res) => {
   // const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds))
   // await sleep(10000);
 
-  var url = req.query.url ?? multiVideoUrl;
+  var url = req.query.url ?? zainab_zawoloo;
 
   // const userAgent = req.headers['x-insta-header'];
   // if (userAgent == undefined || userAgent == null || userAgent == '') {
@@ -57,14 +57,12 @@ app.get('/api', async (req, res) => {
   //   return res.send(result_1)
   // }
 
-  // const result_snapinsta = await _snapinsta(url);
-  // if (result_snapinsta.status == 'success') {
-  //   return res.send(result_snapinsta)
-  // }
 
-  const snapinstaIO = await _snapinstaIO(url);
-  if (snapinstaIO.status == 'success') {
-    return res.send(snapinstaIO)
+
+  //  // https://snapinsta.app/action.php
+  const result_3 = await _snapinsta(url);
+  if (result_3.status == 'success') {
+    return res.send(result_3)
   }
 
   // https://reelit.io/api/fetch
@@ -77,86 +75,8 @@ app.get('/api', async (req, res) => {
   return res.send(object);
 });
 
-async function _snapinstaIO(instaUrl) {
-  const siteUrl = 'https://snapinsta.io/api/ajaxSearch/instagram';
-
-  var object = {};
-  object['status'] = 'success';
-  object['error'] = null;
-  object['site'] = siteUrl;
-  object['data'] = [];
-
-  await axios.post(siteUrl, { q: instaUrl, action: 'post', vt: 'facebook', submit: true, }, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      'Accept': 'application/json, text/plain, */*',
-      'Accept-Encoding': 'gzip, deflate, br',
-      'Accept-Language': 'en-US,en;q=0.9',
-      'Connection': 'keep-alive',
-      'Origin': 'https://snapinsta.io',
-      'referer': 'https://snapinsta.io/en2/instagram-downloader',
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
-    },
-  }).then((response) => {
-    // console.log(response.data);
-
-    var dataStr = response.data;
-    console.log(JSON.stringify(dataStr))
-    // object['data'] = dataStr.data;
-
-    const dom = htmlparser2.parseDocument(dataStr.data);
-    const $ = cheerio.load(dom);
-
-    const items = $('.download-box').find('div.download-items');
-    console.log('total:' + items.length);
-
-    items.each(function (i, elem) {
-
-      // check is exist select.minimal
-      const isExist = $(this).find('select.minimal').length;
-      if (isExist > 0) {
-        const imageSize = $(this).find('select.minimal');
-        const imageSizeOptions = imageSize.find('option');
-        var imageSizeArray = [];
-        imageSizeOptions.each(function (i, elem) {
-          imageSizeArray.push($(this).val());
-        });
-
-        // log the last one
-        const lastImageSize = imageSizeArray[imageSizeArray.length - 1];
-        console.log(lastImageSize);
-
-        object['data'].push({
-          url: lastImageSize.replaceAll('&dl=1', ''),
-          is_video: false,
-        });
-
-      } else {
-        // video 
-        const videoUrl = $(this).find('.download-items__btn').find('a').attr('href');
-        object['data'].push({
-          url: videoUrl.replaceAll('&dl=1', ''),
-          is_video: true,
-        });
-
-      }
-
-    });
-  }
-  ).catch((error) => {
-    console.log(`Error: ${error}`);
-    object['status'] = 'error here ';
-    object['error'] = error;
-  });
-
-  return object;
-}
-
-
-
-
 async function _snapinsta(instaUrl) {
-  const siteUrl = 'https://snapinsta.app/action.php';
+  const siteUrl = 'https://snapinsta.app/action2.php';
 
   var object = {};
   object['status'] = 'success';
@@ -210,7 +130,7 @@ async function _snapinsta(instaUrl) {
     var end = javascriptHtml.indexOf(e, start);
     var result = javascriptHtml.substring(start, end);
 
-    console.log('result: ' + result);
+    // console.log('result: ' + result);
 
     const dom = htmlparser2.parseDocument(result.replaceAll("\\", ""));
     const $ = cheerio.load(dom);
@@ -220,12 +140,12 @@ async function _snapinsta(instaUrl) {
 
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      const itemUrl = $(item).find('a').attr('href');
+      const itemUrl = $(item).find('a').attr('href'); 
       const a_label = $(item).find('a').text().trim();
       // console.log('a_label: ' + a_label);
-
+    
       const is_video = a_label == 'Download Photo' ? false : true;
-
+      
       object['data'].push({
         url: itemUrl.replaceAll('&dl=1', ""),
         is_video: is_video,
