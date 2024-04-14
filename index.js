@@ -33,7 +33,7 @@ app.get('/api', async (req, res) => {
   const multiVideoUrl = 'https://www.instagram.com/p/Cnr10dmonzv/?utm_source=ig_web_copy_link';
   const videoFirstImage = 'https://www.instagram.com/p/Cnr6mjyoWg6/';
 
-  const zainab_zawoloo ='https://www.instagram.com/p/Cpm9esPNFz-/';
+  const zainab_zawoloo ='https://www.instagram.com/p/C5qpM2StO5I/?img_index=1';
 
   // timeout 8 seconds
   const timeout = 8000;
@@ -84,19 +84,21 @@ async function _snapinsta(instaUrl) {
   object['site'] = siteUrl;
   object['data'] = [];
 
-  await axios.post(siteUrl, { url: instaUrl, action: 'post', lang: 'en', submit: true, }, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Accept': 'application/json, text/plain, */*',
-      'Accept-Encoding': 'gzip, deflate, br',
-      'Accept-Language': 'en-US,en;q=0.9',
-      'Connection': 'keep-alive',
-      'Host': 'snapinsta.app',
-      'Origin': 'https://snapinsta.app',
-      'Referer': 'https://snapinsta.app/',
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
-    },
-  }).then((response) => {
+  const siteInfo = await fetchCsrfTokenWithCookies('https://snapinsta.app/', 'input[name="token"]', 'value');
+
+  var headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Connection': 'keep-alive',
+    'Host': 'snapinsta.app',
+    'Origin': 'https://snapinsta.app',
+    'Referer': 'https://snapinsta.app/',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
+  };
+
+  await axios.post(siteUrl, { url: instaUrl, action: 'post', lang: 'en', 'token': siteInfo.csrfToken }, {headers}).then((response) => {
     // console.log(response.data);
 
     // extract decodeURIComponent from response.data
@@ -195,6 +197,41 @@ function eval(h, u, n, t, e, r) {
     r += String.fromCharCode(_0xe62c(s, e, 10) - t)
   }
   return decodeURIComponent(escape(r))
+}
+
+
+async function fetchCsrfTokenWithCookies(url, selector = 'meta[name="csrf-token"]', attribute = 'content') {
+  const headers = {
+      'Host': 'snapinsta.app',
+      // 'Origin': 'https://snapinsta.app',
+      // 'Referer': 'https://snapinsta.app/',
+      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+  };
+
+  try {
+    // Make an HTTP GET request to the webpage
+    const response = await axios.get(url, { headers });
+    const html = response.data;
+
+    const serverTime = response.headers['date'];
+    const timestamp = new Date(serverTime).getTime();
+
+    // console.log('Server Time:', timestamp);
+
+    // Use cheerio to parse the HTML
+    const $ = cheerio.load(html);
+
+    // Extract the CSRF token from meta tags
+    // Adjust the selector as needed based on the meta tag's name or property
+    const csrfToken = $(selector).attr(attribute);
+    const cookies = response.headers['set-cookie'];
+
+    return { 'csrfToken': csrfToken, 'cookies': cookies };
+
+  } catch (error) {
+    console.error('Error fetching CSRF Token:', error);
+    return null;
+  }
 }
 
 
